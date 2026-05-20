@@ -6,10 +6,25 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.management.RuntimeErrorException;
+
 // Classe para realizar acesso e tratamento do JSON.
 public class RepositorioProds {
     // pegar path relativo do dados/produtos.json
-    private static final String PATH = Paths.get("dados", "produtos.json").toString();
+   private static final String PATH = buscarCaminhoArquivo();
+
+    private static String buscarCaminhoArquivo() {
+    // Tenta o caminho direto (raiz)
+    File raiz = new File("dados/produtos.json");
+    if (raiz.exists()) return raiz.getPath();
+    
+    // Tenta dentro da pasta do projeto (comum no VS Code)
+    File subpasta = new File("carrinho2.0-master/dados/produtos.json");
+    if (subpasta.exists()) return subpasta.getPath();
+
+    // Se nada funcionar, retorna o padrão para evitar erro de compilação
+    return "dados/produtos.json";
+}
     // instanciar o mapper para ler o .json
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -29,7 +44,21 @@ public class RepositorioProds {
         }
     }
 
-    public void AddProduto(Produto produto_add){
+    public void mostrarprodutos() {
+
+        try {
+            File arquivo = new File(PATH);
+
+            List <Produto> produtos = mapper.readValue(arquivo, new TypeReference<List<Produto>>() {});
+                for (Produto produto : produtos) {
+                    System.out.println(produto);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("erro ao mostrar produto", e);
+        }
+    }
+
+    public String AddProduto(Produto produto_add){
         try {
 
             List<Produto> produtoList = listarProds();
@@ -37,14 +66,16 @@ public class RepositorioProds {
             if(buscarProdID(produto_add.getId()) == null){
                 // adiciona o produto na lista
                 produtoList.add(produto_add);
-                // escreve a lista no arquivo do PATH
                 mapper.writerWithDefaultPrettyPrinter().writeValue(new File(PATH), produtoList);
+                return "Produto adicionado com sucesso";
+            } else if (buscarProdID(produto_add.getId()) != null) {
+                return "Produto ja existente";
             }
 
         }
         catch (Exception e){
             throw new RuntimeException("Erro ao contatar o repositório", e);
-        }
+        } return null;
     }
 
     public void RemoveProduto(Produto produto_deletado){
@@ -71,17 +102,35 @@ public class RepositorioProds {
 
     public Produto buscarProdID(int id) {
         List<Produto> produtosAnalisados = listarProds();
-        // for each do produtos
-        for (Produto produto : produtosAnalisados) {
+        try {
+            for (Produto produto : produtosAnalisados) {
             if (produto.getId() == id) {
                 return produto;
             }
         }
-
+        } catch (Exception e) {
+            throw new RuntimeException("Produto nao encontrado", e);
+        }
         return null;
     }
 
-    public boolean existeProdutos(){
-        return api_repo.API_Request(this) == 200;
+    public void atualizar_produto(int id, String nome, Double preco, int qtd) {
+        try {
+            List<Produto> produtoList = listarProds();
+            
+            for (Produto p : produtoList) {
+                if (p.getId() == id) {
+                    p.setNome(nome);
+                    p.setPreco(preco);
+                    p.setQuantidade(qtd);
+
+                    mapper.writerWithDefaultPrettyPrinter().writeValue(new File(PATH), produtoList);
+                }
+            }
+            } catch (Exception e) {
+            throw new RuntimeException("Erro ao atualizar o repositório", e);}
     }
+
+
+
 }

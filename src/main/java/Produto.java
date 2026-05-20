@@ -6,6 +6,7 @@ public class Produto {
     protected int id_prod;
     protected String nome;
     protected double preco;
+    protected int quantidade_carrinho;
     // assinatura para linkar o atributo com a chave do json
     @JsonProperty("quant")
     protected int quant;
@@ -49,6 +50,12 @@ public class Produto {
         return quant;
     }
 
+    public void setquantidadecarrinho(int qtd) {
+        this.quantidade_carrinho = qtd;
+    }
+
+    public int getquantidadecarrinho() {return quantidade_carrinho;}
+
     @JsonProperty("quant")
     public void setQuantidade(int quantidade) {
         this.quant = quantidade;
@@ -56,11 +63,13 @@ public class Produto {
 
     @Override
     public String toString() {
-        return "Produto{" +
-                "id_prod=" + id_prod +
-                ", nome='" + nome + '\'' +
-                ", preco=" + preco +
-                ", quant=" + quant +
-                '}';
-    }
+    return "'Produto{" +
+            "id_prod=" + id_prod +
+            ", nome=" + nome +
+            ", preco=" + preco +
+            ", quant=" + quant +
+            "'}";
+}
+
+
 }

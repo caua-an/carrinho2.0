@@ -1,11 +1,25 @@
 [ {
   "nome" : "Teclado membrana",
   "preco" : 19.9,
+  "quantidadecarrinho" : 0,
   "id_prod" : 1,
-  "quant" : 10
+  "quant" : 8
 }, {
   "nome" : "Teclado mecânico",
-  "preco" : 149.9,
+  "preco" : 179.9,
+  "quantidadecarrinho" : 0,
   "id_prod" : 2,
   "quant" : 3
+}, {
+  "nome" : "Mouse generico",
+  "preco" : 19.9,
+  "quantidadecarrinho" : 0,
+  "id_prod" : 3,
+  "quant" : 15
+}, {
+  "nome" : "Monitor",
+  "preco" : 499.99,
+  "quantidadecarrinho" : 0,
+  "id_prod" : 4,
+  "quant" : 4
 } ]
